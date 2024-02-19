@@ -10,6 +10,10 @@ const helmet = require('helmet');
 const cors = require('cors');
 const xssClean = require('xss-clean');
 const expressRateLimit = require('express-rate-limit');
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+
+const swaggerDocument = YAML.load('./swagger.yaml');
 
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
@@ -29,8 +33,9 @@ app.use(xssClean());
 
 // routes
 app.get('/', (req, res) => {
-  res.send('jobs api');
+  res.send('<h1>Jobs Api</h1><a href="/api-docs">Docs</a>');
 });
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/api/v1/auth',authRouter);
 app.use('/api/v1/jobs',authenticatedUser,jobsRouter);
 
